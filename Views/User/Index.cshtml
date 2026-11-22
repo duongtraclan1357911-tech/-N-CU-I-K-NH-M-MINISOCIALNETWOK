@@ -1,0 +1,264 @@
+﻿
+@model IEnumerable<MiniSocialMedia.Models.User>
+
+@{
+    ViewBag.Title = "Danh sách người dùng";
+
+    var followingIds = ViewBag.FollowingIds as List<int>
+                       ?? new List<int>();
+
+    int currentUserId = ViewBag.CurrentUserId;
+}
+
+<style>
+    .user-page-title {
+        text-align: center;
+        color: #1877f2;
+        font-weight: bold;
+        margin-bottom: 25px;
+    }
+
+    .user-search {
+        background: white;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .user-card {
+        background: white;
+        border: 1px solid #e4e6eb;
+        border-radius: 15px;
+        padding: 22px;
+        text-align: center;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: 0.2s;
+    }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+        }
+
+    .user-avatar {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        background: #1877f2;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0 auto 15px;
+        overflow: hidden;
+    }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .user-name {
+        font-size: 19px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #1c1e21;
+    }
+
+    .user-username {
+        color: #65676b;
+        margin-bottom: 12px;
+    }
+
+    .user-info {
+        font-size: 14px;
+        color: #65676b;
+        margin-bottom: 15px;
+        overflow-wrap: anywhere;
+    }
+
+    .user-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+        .user-buttons .btn {
+            border-radius: 8px;
+        }
+</style>
+
+<div class="container mt-4">
+
+    <h2 class="user-page-title">
+        👥 DANH SÁCH NGƯỜI DÙNG
+    </h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info">
+            @TempData["Message"]
+        </div>
+    }
+
+    <!-- Tìm kiếm người dùng -->
+    <div class="user-search">
+
+        @using (Html.BeginForm("Index", "User", FormMethod.Get))
+        {
+            <div class="input-group">
+
+                <input type="text"
+                       name="searchString"
+                       class="form-control"
+                       placeholder="Tìm kiếm theo tên hoặc username..."
+                       value="@ViewBag.SearchString" />
+
+                <button type="submit" class="btn btn-primary">
+                    🔍 Tìm kiếm
+                </button>
+
+                <a href="@Url.Action("Index", "User")"
+                   class="btn btn-secondary">
+                    Làm mới
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+    <!-- Danh sách thẻ người dùng -->
+    <div class="row">
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (var user in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <div class="user-card">
+
+                        <!-- Avatar -->
+                        <div class="user-avatar">
+
+                            @if (!string.IsNullOrEmpty(user.AvatarUrl))
+                            {
+                                <img src="@user.AvatarUrl"
+                                     alt="Ảnh đại diện" />
+                            }
+                            else
+                            {
+                                @(
+                                    !string.IsNullOrEmpty(user.Username)
+                                    ? user.Username.Substring(0, 1).ToUpper()
+                                    : "U"
+                                )
+                            }
+
+                        </div>
+
+                        <!-- Thông tin người dùng -->
+                        <div class="user-name">
+                            @(string.IsNullOrEmpty(user.FullName)
+                                ? user.Username
+                                : user.FullName)
+                        </div>
+
+                        <div class="user-username">
+                            @@@user.Username
+                        </div>
+
+                        <div class="user-info">
+
+                            <p>
+                                📧 @user.Email
+                            </p>
+
+                            @if (!string.IsNullOrEmpty(user.Bio))
+                            {
+                                <p>@user.Bio</p>
+                            }
+
+                        </div>
+
+                        ```cshtml
+                        <!-- Các nút thao tác -->
+                        <div class="user-buttons">
+
+                            <!-- Xem trang cá nhân -->
+                            <a href="@Url.Action(
+        "UserProfile",
+        "User",
+        new { id = user.UserId })"
+                               class="btn btn-info btn-sm">
+                                👤 Xem hồ sơ
+                            </a>
+
+                            @if (user.UserId == currentUserId)
+                            {
+                                <a href="@Url.Action(
+            "Edit",
+            "User",
+            new { id = user.UserId })"
+                                   class="btn btn-warning btn-sm">
+                                    ✏ Sửa hồ sơ
+                                </a>
+                            }
+                            else
+                            {
+                                using (Html.BeginForm(
+                                    "ToggleFollow",
+                                    "User",
+                                    FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="followingId"
+                                           value="@user.UserId" />
+
+                                    if (followingIds.Contains(user.UserId))
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-secondary btn-sm">
+                                            ✓ Đang theo dõi
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-primary btn-sm">
+                                            + Theo dõi
+                                        </button>
+                                    }
+                                }
+                            }
+
+                        </div>
+                        ```
+
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    Không tìm thấy người dùng nào.
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>
+

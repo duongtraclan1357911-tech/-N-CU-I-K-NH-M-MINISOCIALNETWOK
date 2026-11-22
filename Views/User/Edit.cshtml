@@ -1,0 +1,199 @@
+﻿
+@model MiniSocialMedia.Models.User
+
+@{
+    ViewBag.Title = "Chỉnh sửa hồ sơ";
+}
+
+<style>
+    .edit-page {
+        max-width: 750px;
+        margin: 35px auto;
+    }
+
+    .edit-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        border: 1px solid #e4e6eb;
+    }
+
+    .edit-title {
+        text-align: center;
+        color: #1877f2;
+        font-weight: bold;
+        margin-bottom: 25px;
+    }
+
+    .edit-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: #1877f2;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 35px;
+        font-weight: bold;
+        margin: 0 auto 12px;
+        overflow: hidden;
+    }
+
+        .edit-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .edit-label {
+        font-weight: bold;
+        margin-bottom: 7px;
+    }
+
+    .edit-card .form-control {
+        border-radius: 8px;
+        padding: 10px 12px;
+    }
+
+    .edit-card .form-group {
+        margin-bottom: 18px;
+    }
+
+    .edit-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+        .edit-buttons .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+</style>
+
+<div class="container edit-page">
+
+    <div class="edit-card">
+
+        <h2 class="edit-title">
+            ✏ CHỈNH SỬA HỒ SƠ
+        </h2>
+
+        <!-- Avatar -->
+        <div class="edit-avatar">
+
+            @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+            {
+                <img src="@Model.AvatarUrl" alt="Avatar" />
+            }
+            else
+            {
+                @(
+                    !string.IsNullOrEmpty(Model.Username)
+                    ? Model.Username.Substring(0, 1).ToUpper()
+                    : "U"
+                )
+            }
+
+        </div>
+
+        <p class="text-center text-muted mb-4">
+            Cập nhật thông tin cá nhân của bạn
+        </p>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(m => m.UserId)
+
+            <div class="form-group">
+                <label class="edit-label">Tên tài khoản</label>
+
+                @Html.TextBoxFor(m => m.Username,
+                    new
+                         {
+                        @class = "form-control",
+                        placeholder = "Nhập username",
+                        maxlength = "50"
+                    })
+
+                @Html.ValidationMessageFor(m => m.Username,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label class="edit-label">Họ và tên</label>
+
+                @Html.TextBoxFor(m => m.FullName,
+                    new
+                         {
+                        @class = "form-control",
+                        placeholder = "Nhập họ và tên",
+                        maxlength = "200"
+                    })
+
+                @Html.ValidationMessageFor(m => m.FullName,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label class="edit-label">Email</label>
+
+                @Html.TextBoxFor(m => m.Email,
+                    new
+                         {
+                        @class = "form-control",
+                        placeholder = "Nhập địa chỉ email",
+                        type = "email",
+                        maxlength = "100"
+                    })
+
+                @Html.ValidationMessageFor(m => m.Email,
+                    "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label class="edit-label">Đường dẫn ảnh đại diện</label>
+
+                @Html.TextBoxFor(m => m.AvatarUrl,
+                    new
+                         {
+                        @class = "form-control",
+                        placeholder = "Nhập URL ảnh đại diện"
+                    })
+            </div>
+
+            <div class="form-group">
+                <label class="edit-label">Giới thiệu bản thân</label>
+
+                @Html.TextAreaFor(m => m.Bio,
+                    new
+                         {
+                        @class = "form-control",
+                        rows = 4,
+                        placeholder = "Hãy giới thiệu đôi chút về bạn...",
+                        maxlength = "510"
+                    })
+            </div>
+
+            <div class="edit-buttons">
+
+                <button type="submit" class="btn btn-primary">
+                    💾 Lưu thay đổi
+                </button>
+
+                <a href="@Url.Action("Index", "User")"
+                   class="btn btn-secondary">
+                    Quay lại
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+

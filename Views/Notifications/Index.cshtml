@@ -1,0 +1,64 @@
+﻿
+@model IEnumerable<MiniSocialMedia.Models.Notification>
+
+@{
+    ViewBag.Title = "Thông báo";
+}
+
+<div class="container mt-4">
+    <h2>Thông báo</h2>
+    <hr />
+
+    @if (Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p>
+                        <strong>
+                            @(item.Sender != null ? item.Sender.FullName : "Người dùng")
+                        </strong>
+                        @item.Message
+                    </p>
+
+                    <small class="text-muted">
+                        @item.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+
+
+                    @if (!item.IsRead)
+                    {
+                        <span class="badge badge-primary">
+                            Chưa đọc
+                        </span>
+
+                        using (Html.BeginForm("MarkAsRead", "Notifications",
+                            FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.NotificationId)
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                Đánh dấu đã đọc
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        <span class="badge badge-success">
+                            Đã đọc
+                        </span>
+                    }
+
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Bạn chưa có thông báo nào.</p>
+    }
+</div>
+

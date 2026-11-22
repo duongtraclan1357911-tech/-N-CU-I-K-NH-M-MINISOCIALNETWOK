@@ -1,0 +1,354 @@
+﻿
+@model MiniSocialMedia.Models.ViewModle.ProfileViewModel
+
+@{
+    ViewBag.Title = "Trang cá nhân";
+}
+
+<style>
+    .profile-container {
+        max-width: 850px;
+        margin: 30px auto;
+        padding: 0 12px;
+    }
+
+    .profile-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #e8efff;
+    }
+
+    .profile-name {
+        margin-top: 15px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .profile-username {
+        color: #777;
+    }
+
+    .profile-bio {
+        margin: 15px 0;
+        color: #444;
+    }
+
+    .profile-post {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        text-align: left;
+    }
+
+    .post-date {
+        color: #888;
+        font-size: 13px;
+    }
+
+    .profile-stats {
+        display: flex;
+        justify-content: center;
+        gap: 45px;
+        margin: 25px 0;
+        padding: 18px 10px;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .stat-item strong {
+            font-size: 23px;
+            color: #1877f2;
+        }
+
+        .stat-item span {
+            font-size: 14px;
+            color: #65676b;
+        }
+
+    .profile-list {
+        margin-top: 20px;
+        text-align: left;
+    }
+
+        .profile-list h4 {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+    .profile-user-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .profile-user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .profile-user-info span {
+            color: #777;
+            font-size: 13px;
+        }
+
+    @@media (max-width: 576px) {
+        .profile-stats {
+            gap: 20px;
+        }
+
+        .profile-card {
+            padding: 20px 12px;
+        }
+
+        .stat-item strong {
+            font-size: 20px;
+        }
+
+        .stat-item span {
+            font-size: 12px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+
+    <!-- THÔNG TIN CÁ NHÂN -->
+    <div class="profile-card">
+
+        <!-- Ảnh đại diện -->
+        @if (!string.IsNullOrEmpty(Model.User.AvatarUrl))
+        {
+            <img src="@Model.User.AvatarUrl"
+                 class="profile-avatar"
+                 alt="Ảnh đại diện" />
+        }
+        else
+        {
+            <div class="profile-avatar"
+                 style="background:#1877f2;
+                        color:white;
+                        display:inline-flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:45px;">
+
+                @(
+                    !string.IsNullOrEmpty(Model.User.Username)
+                    ? Model.User.Username.Substring(0, 1).ToUpper()
+                    : "U"
+                )
+
+            </div>
+        }
+
+        <!-- Tên người dùng -->
+        <div class="profile-name">
+            @Model.User.FullName
+        </div>
+
+        <div class="profile-username">
+            @@ @Model.User.Username
+        </div>
+
+        <!-- Tiểu sử -->
+        <p class="profile-bio">
+            @(string.IsNullOrWhiteSpace(Model.User.Bio)
+                ? "Chưa có tiểu sử."
+                : Model.User.Bio)
+        </p>
+
+        <p>
+            📧 @Model.User.Email
+        </p>
+
+        <!-- THỐNG KÊ TÀI KHOẢN -->
+        <div class="profile-stats">
+
+            <div class="stat-item">
+                <strong>@Model.PostsCount</strong>
+                <span>Bài viết</span>
+            </div>
+
+            <div class="stat-item">
+                <strong>@Model.FollowersCount</strong>
+                <span>Người theo dõi</span>
+            </div>
+
+            <div class="stat-item">
+                <strong>@Model.FollowingCount</strong>
+                <span>Đang theo dõi</span>
+            </div>
+
+        </div>
+
+        <!-- DANH SÁCH NGƯỜI THEO DÕI -->
+        <div class="profile-list">
+
+            <h4>👥 Người theo dõi</h4>
+
+            @if (Model.Followers != null && Model.Followers.Any())
+            {
+                foreach (var follower in Model.Followers)
+                {
+                    <div class="profile-post profile-user-item">
+
+                        <div class="profile-user-info">
+                            <strong>@follower.FullName</strong>
+                            <span>@@@follower.Username</span>
+                        </div>
+
+                        <a href="@Url.Action("UserProfile", "User",
+                            new { id = follower.UserId })"
+                           class="btn btn-info btn-sm">
+                            Xem hồ sơ
+                        </a>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">
+                    Chưa có người theo dõi.
+                </p>
+            }
+
+        </div>
+
+        <!-- DANH SÁCH ĐANG THEO DÕI -->
+        <div class="profile-list">
+
+            <h4>➕ Đang theo dõi</h4>
+
+            @if (Model.Following != null && Model.Following.Any())
+            {
+                foreach (var followingUser in Model.Following)
+                {
+                    <div class="profile-post profile-user-item">
+
+                        <div class="profile-user-info">
+                            <strong>@followingUser.FullName</strong>
+                            <span>@@@followingUser.Username</span>
+                        </div>
+
+                        <a href="@Url.Action("UserProfile", "User",
+                            new { id = followingUser.UserId })"
+                           class="btn btn-info btn-sm">
+                            Xem hồ sơ
+                        </a>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">
+                    Chưa theo dõi ai.
+                </p>
+            }
+
+        </div>
+
+        <!-- NÚT THAO TÁC -->
+        <div style="margin-top:25px;">
+
+            @if (Model.CurrentUserId == Model.User.UserId)
+            {
+                <a href="@Url.Action(
+                    "Edit",
+                    "User",
+                    new { id = Model.User.UserId })"
+                   class="btn btn-warning">
+                    ✏ Chỉnh sửa hồ sơ
+                </a>
+            }
+            else
+            {
+                using (Html.BeginForm(
+                    "ToggleFollow",
+                    "User",
+                    FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="followingId"
+                           value="@Model.User.UserId" />
+
+                    <button type="submit"
+                            class="btn @(Model.IsFollowing
+                                ? "btn-secondary"
+                                : "btn-primary")">
+
+                        @(Model.IsFollowing
+                            ? "✓ Đang theo dõi"
+                            : "+ Theo dõi")
+
+                    </button>
+                }
+            }
+
+        </div>
+
+    </div>
+
+    <!-- DANH SÁCH BÀI VIẾT -->
+    <h3>Bài viết của @Model.User.FullName</h3>
+
+    @if (Model.Posts != null && Model.Posts.Any())
+    {
+        foreach (var post in Model.Posts)
+        {
+            <div class="profile-post">
+
+                <div class="post-date">
+                    @post.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                </div>
+
+                <div style="margin-top:12px;
+                            white-space:pre-wrap;
+                            overflow-wrap:anywhere;">
+                    @post.Content
+                </div>
+
+                @if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    <img src="@post.ImageUrl"
+                         alt="Ảnh bài viết"
+                         style="max-width:100%;
+                                margin-top:12px;
+                                border-radius:10px;" />
+                }
+
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Người dùng này chưa có bài viết nào.
+        </div>
+    }
+
+</div>

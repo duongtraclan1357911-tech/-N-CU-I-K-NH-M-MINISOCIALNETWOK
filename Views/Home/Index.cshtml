@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "Trang chủ";
+}
+
+<style>
+    .home-hero {
+        background: linear-gradient(135deg, #1877f2, #4f9cff);
+        color: white;
+        border-radius: 20px;
+        padding: 65px 25px;
+        text-align: center;
+        margin-top: 20px;
+        box-shadow: 0 5px 18px rgba(24, 119, 242, 0.2);
+    }
+
+        .home-hero h1 {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .home-hero p {
+            font-size: 18px;
+            margin-bottom: 28px;
+        }
+
+    .home-btn {
+        display: inline-block;
+        padding: 12px 25px;
+        border-radius: 9px;
+        font-weight: bold;
+        text-decoration: none;
+        margin: 5px;
+        transition: 0.2s;
+    }
+
+    .home-btn-primary {
+        background: white;
+        color: #1877f2;
+    }
+
+    .home-btn-secondary {
+        border: 2px solid white;
+        color: white;
+    }
+
+    .home-btn:hover {
+        transform: translateY(-3px);
+        text-decoration: none;
+    }
+
+    .home-section-title {
+        text-align: center;
+        font-weight: bold;
+        margin: 45px 0 25px;
+        color: #1877f2;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 28px 20px;
+        text-align: center;
+        height: 100%;
+        border: 1px solid #e4e6eb;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        transition: 0.2s;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+
+    .feature-icon {
+        font-size: 42px;
+        margin-bottom: 15px;
+    }
+
+    .feature-card h4 {
+        font-weight: bold;
+        color: #1877f2;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        color: #65676b;
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
+
+    .home-intro {
+        background: white;
+        padding: 28px;
+        border-radius: 15px;
+        margin-top: 35px;
+        text-align: center;
+        border: 1px solid #e4e6eb;
+    }
+</style>
+
+<div class="container">
+
+    <!-- Phần chào mừng -->
+    <div class="home-hero">
+
+        <h1>MINI SOCIAL MEDIA</h1>
+
+        <p>
+            Chia sẻ suy nghĩ, kết nối bạn bè
+            và lan tỏa những điều tích cực!
+        </p>
+
+        @Html.ActionLink(
+            "Xem bảng tin",
+            "Newsfeed",
+            "Post",
+            null,
+            new { @class = "home-btn home-btn-primary" }
+        )
+
+        @Html.ActionLink(
+            "Khám phá người dùng",
+            "Index",
+            "User",
+            null,
+            new { @class = "home-btn home-btn-secondary" }
+        )
+
+    </div>
+
+    <!-- Các chức năng -->
+    <h2 class="home-section-title">
+        CÁC CHỨC NĂNG CHÍNH
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h4>Đăng bài viết</h4>
+                <p>
+                    Chia sẻ suy nghĩ và nội dung
+                    của bạn với mọi người.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">❤️</div>
+                <h4>Like và bình luận</h4>
+                <p>
+                    Tương tác với các bài viết
+                    thông qua Like và Comment.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h4>Kết nối bạn bè</h4>
+                <p>
+                    Tìm kiếm người dùng và
+                    theo dõi những người bạn quan tâm.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Giới thiệu -->
+    <div class="home-intro">
+        <h3>Chào mừng đến với MiniSocialMedia!</h3>
+
+        <p>
+            MiniSocialMedia là website mạng xã hội mini
+            được xây dựng bằng ASP.NET MVC 5 và SQL Server.
+            Website hỗ trợ người dùng đăng bài viết,
+            tìm kiếm nội dung và tương tác với nhau.
+        </p>
+    </div>
+
+</div>
